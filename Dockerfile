@@ -14,5 +14,4 @@ RUN apt-get install -y libopencv-dev python3-opencv
 # git clone
 RUN git clone https://github.com/gaoxinge/darknet.git
 
-
 CMD ["sleep", "infinity"]
