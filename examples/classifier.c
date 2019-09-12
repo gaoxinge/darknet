@@ -1,13 +1,10 @@
-#include "darknet.h"
-
 #include <sys/time.h>
 #include <assert.h>
+#include "darknet.h"
 
-float *get_regression_values(char **labels, int n)
-{
+float *get_regression_values(char **labels, int n) {
     float *v = calloc(n, sizeof(float));
-    int i;
-    for(i = 0; i < n; ++i){
+    for(int i = 0; i < n; i++) {
         char *p = strchr(labels[i], ' ');
         *p = 0;
         v[i] = atof(p+1);
@@ -15,8 +12,7 @@ float *get_regression_values(char **labels, int n)
     return v;
 }
 
-void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear)
-{
+void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear) {
     int i;
 
     float avg_loss = -1;
@@ -167,8 +163,7 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus,
     free(base);
 }
 
-void validate_classifier_crop(char *datacfg, char *filename, char *weightfile)
-{
+void validate_classifier_crop(char *datacfg, char *filename, char *weightfile) {
     int i = 0;
     network *net = load_network(filename, weightfile, 0);
     srand(time(0));
@@ -231,8 +226,7 @@ void validate_classifier_crop(char *datacfg, char *filename, char *weightfile)
     }
 }
 
-void validate_classifier_10(char *datacfg, char *filename, char *weightfile)
-{
+void validate_classifier_10(char *datacfg, char *filename, char *weightfile) {
     int i, j;
     network *net = load_network(filename, weightfile, 0);
     set_batch_network(net, 1);
@@ -300,8 +294,7 @@ void validate_classifier_10(char *datacfg, char *filename, char *weightfile)
     }
 }
 
-void validate_classifier_full(char *datacfg, char *filename, char *weightfile)
-{
+void validate_classifier_full(char *datacfg, char *filename, char *weightfile) {
     int i, j;
     network *net = load_network(filename, weightfile, 0);
     set_batch_network(net, 1);
@@ -413,8 +406,7 @@ void validate_classifier_single(char *datacfg, char *filename, char *weightfile)
     }
 }
 
-void validate_classifier_multi(char *datacfg, char *cfg, char *weights)
-{
+void validate_classifier_multi(char *datacfg, char *cfg, char *weights) {
     int i, j;
     network *net = load_network(cfg, weights, 0);
     set_batch_network(net, 1);
@@ -475,11 +467,10 @@ void validate_classifier_multi(char *datacfg, char *cfg, char *weights)
     }
 }
 
-void try_classifier(char *datacfg, char *cfgfile, char *weightfile, char *filename, int layer_num)
-{
+void try_classifier(char *datacfg, char *cfgfile, char *weightfile, char *filename, int layer_num) {
     network *net = load_network(cfgfile, weightfile, 0);
     set_batch_network(net, 1);
-    srand(2222222);
+    srand(time(0));
 
     list *options = read_data_cfg(datacfg);
 
@@ -553,11 +544,10 @@ void try_classifier(char *datacfg, char *cfgfile, char *weightfile, char *filena
     }
 }
 
-void predict_classifier(char *datacfg, char *cfgfile, char *weightfile, char *filename, int top)
-{
+void predict_classifier(char *datacfg, char *cfgfile, char *weightfile, char *filename, int top) {
     network *net = load_network(cfgfile, weightfile, 0);
     set_batch_network(net, 1);
-    srand(2222222);
+    srand(time(0));
 
     list *options = read_data_cfg(datacfg);
 
@@ -606,9 +596,7 @@ void predict_classifier(char *datacfg, char *cfgfile, char *weightfile, char *fi
     }
 }
 
-
-void label_classifier(char *datacfg, char *filename, char *weightfile)
-{
+void label_classifier(char *datacfg, char *filename, char *weightfile) {
     int i;
     network *net = load_network(filename, weightfile, 0);
     set_batch_network(net, 1);
@@ -642,8 +630,7 @@ void label_classifier(char *datacfg, char *filename, char *weightfile)
     }
 }
 
-void csv_classifier(char *datacfg, char *cfgfile, char *weightfile)
-{
+void csv_classifier(char *datacfg, char *cfgfile, char *weightfile) {
     int i,j;
     network *net = load_network(cfgfile, weightfile, 0);
     srand(time(0));
@@ -682,8 +669,7 @@ void csv_classifier(char *datacfg, char *cfgfile, char *weightfile)
     }
 }
 
-void test_classifier(char *datacfg, char *cfgfile, char *weightfile, int target_layer)
-{
+void test_classifier(char *datacfg, char *cfgfile, char *weightfile, int target_layer) {
     int curr = 0;
     network *net = load_network(cfgfile, weightfile, 0);
     srand(time(0));
@@ -751,8 +737,7 @@ void test_classifier(char *datacfg, char *cfgfile, char *weightfile, int target_
     }
 }
 
-void file_output_classifier(char *datacfg, char *filename, char *weightfile, char *listfile)
-{
+void file_output_classifier(char *datacfg, char *filename, char *weightfile, char *listfile) {
     int i,j;
     network *net = load_network(filename, weightfile, 0);
     set_batch_network(net, 1);
@@ -790,8 +775,7 @@ void file_output_classifier(char *datacfg, char *filename, char *weightfile, cha
 }
 
 
-void threat_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_index, const char *filename)
-{
+void threat_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_index, const char *filename) {
 #ifdef OPENCV
     float threat = 0;
     float roll = .2;
@@ -913,8 +897,7 @@ void threat_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_i
 }
 
 
-void gun_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_index, const char *filename)
-{
+void gun_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_index, const char *filename) {
 #ifdef OPENCV
     int bad_cats[] = {218, 539, 540, 1213, 1501, 1742, 1911, 2415, 4348, 19223, 368, 369, 370, 1133, 1200, 1306, 2122, 2301, 2537, 2823, 3179, 3596, 3639, 4489, 5107, 5140, 5289, 6240, 6631, 6762, 7048, 7171, 7969, 7984, 7989, 8824, 8927, 9915, 10270, 10448, 13401, 15205, 18358, 18894, 18895, 19249, 19697};
 
@@ -979,8 +962,7 @@ void gun_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_inde
 #endif
 }
 
-void demo_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_index, const char *filename)
-{
+void demo_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_index, const char *filename) {
 #ifdef OPENCV
     char *base = basecfg(cfgfile);
     image **alphabet = load_alphabet();
@@ -1052,8 +1034,7 @@ void demo_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_ind
 #endif
 }
 
-void run_classifier(int argc, char **argv)
-{
+void run_classifier(int argc, char **argv) {
     if(argc < 4){
         fprintf(stderr, "usage: %s %s [train/test/valid] [cfg] [weights (optional)]\n", argv[0], argv[1]);
         return;
