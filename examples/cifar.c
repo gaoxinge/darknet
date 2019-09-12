@@ -228,9 +228,7 @@ void eval_cifar_csv()
     free_matrix(pred);
 }
 
-
-void run_cifar(int argc, char **argv)
-{
+void run_cifar(int argc, char **argv) {
     if(argc < 4){
         fprintf(stderr, "usage: %s %s [train/test/valid] [cfg] [weights (optional)]\n", argv[0], argv[1]);
         return;
@@ -247,5 +245,3 @@ void run_cifar(int argc, char **argv)
     else if(0==strcmp(argv[2], "csvtrain")) test_cifar_csvtrain(cfg, weights);
     else if(0==strcmp(argv[2], "eval")) eval_cifar_csv();
 }
-
-

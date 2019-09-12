@@ -357,16 +357,13 @@ void validate_classifier_full(char *datacfg, char *filename, char *weightfile)
     }
 }
 
-
-void validate_classifier_single(char *datacfg, char *filename, char *weightfile)
-{
-    int i, j;
-    network *net = load_network(filename, weightfile, 0);
-    set_batch_network(net, 1);
+void validate_classifier_single(char *datacfg, char *filename, char *weightfile) {
     srand(time(0));
 
-    list *options = read_data_cfg(datacfg);
+    network *net = load_network(filename, weightfile, 0);
+    set_batch_network(net, 1);
 
+    list *options = read_data_cfg(datacfg);
     char *label_list = option_find_str(options, "labels", "data/labels.list");
     char *leaf_list = option_find_str(options, "leaves", 0);
     if(leaf_list) change_leaves(net->hierarchy, leaf_list);
@@ -385,15 +382,16 @@ void validate_classifier_single(char *datacfg, char *filename, char *weightfile)
     float avg_topk = 0;
     int *indexes = calloc(topk, sizeof(int));
 
-    for(i = 0; i < m; ++i){
+    for (int i = 0; i < m; i++) {
         int class = -1;
         char *path = paths[i];
-        for(j = 0; j < classes; ++j){
+        for (int j = 0; j < classes; j++) {
             if(strstr(path, labels[j])){
                 class = j;
                 break;
             }
         }
+
         image im = load_image_color(paths[i], 0, 0);
         image crop = center_crop_image(im, net->w, net->h);
         //grayscale_image_3c(crop);
@@ -401,16 +399,14 @@ void validate_classifier_single(char *datacfg, char *filename, char *weightfile)
         //show_image(crop, "cropped");
         //cvWaitKey(0);
         float *pred = network_predict(net, crop.data);
-        if(net->hierarchy) hierarchy_predictions(pred, net->outputs, net->hierarchy, 1, 1);
-
+        if (net->hierarchy) hierarchy_predictions(pred, net->outputs, net->hierarchy, 1, 1);
         free_image(im);
         free_image(crop);
         top_k(pred, classes, topk, indexes);
 
-        if(indexes[0] == class) avg_acc += 1;
-        for(j = 0; j < topk; ++j){
-            if(indexes[j] == class) avg_topk += 1;
-        }
+        if (indexes[0] == class) avg_acc += 1;
+        for (int j = 0; j < topk; j++)
+            if (indexes[j] == class) avg_topk += 1;
 
         printf("%s, %d, %f, %f, \n", paths[i], class, pred[0], pred[1]);
         printf("%d: top 1: %f, top %d: %f\n", i, avg_acc/(i+1), topk, avg_topk/(i+1));
@@ -1056,7 +1052,6 @@ void demo_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_ind
 #endif
 }
 
-
 void run_classifier(int argc, char **argv)
 {
     if(argc < 4){
@@ -1067,7 +1062,6 @@ void run_classifier(int argc, char **argv)
     char *gpu_list = find_char_arg(argc, argv, "-gpus", 0);
     int ngpus;
     int *gpus = read_intlist(gpu_list, &ngpus, gpu_index);
-
 
     int cam_index = find_int_arg(argc, argv, "-c", 0);
     int top = find_int_arg(argc, argv, "-t", 0);
@@ -1094,5 +1088,3 @@ void run_classifier(int argc, char **argv)
     else if(0==strcmp(argv[2], "validcrop")) validate_classifier_crop(data, cfg, weights);
     else if(0==strcmp(argv[2], "validfull")) validate_classifier_full(data, cfg, weights);
 }
-
-
