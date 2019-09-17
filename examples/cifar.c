@@ -14,7 +14,7 @@ void train_cifar(char *cfgfile, char *weightfile) {
     char **paths = (char **) list_to_array(plist);
     int N = plist->size;
 
-    data train;
+    data train, buffer;
     load_args args = {0};
     args.w = net->w;
     args.h = net->h;
@@ -33,14 +33,16 @@ void train_cifar(char *cfgfile, char *weightfile) {
     args.labels = labels;
     args.type = CLASSIFICATION_DATA;
     args.threads = 32;
-    args.d = &train;
+    args.d = &buffer;
     pthread_t load_thread = load_data(args);
-    pthread_join(load_thread, 0);
 
-    // data train = load_all_cifar10();
     int epoch = (*net->seen) / N;
     float avg_loss = -1;
     while (get_current_batch(net) < net->max_batches || net->max_batches == 0) {
+        pthread_join(load_thread, 0);
+        train = buffer;
+        load_thread = load_data(args);
+
         double time = what_time_is_it_now();
         float loss = train_network_sgd(net, train, 1);
         if (avg_loss == -1) avg_loss = loss;
@@ -60,7 +62,7 @@ void train_cifar(char *cfgfile, char *weightfile) {
             sprintf(buff, "%s/%s_%d.weights", backup_directory, base, epoch);
             save_weights(net, buff);
         }
-        if (get_current_batch(net) % 100 == 0) {
+        if (get_current_batch(net) % 1000 == 0) {
             char buff[256];
             sprintf(buff, "%s/%s.backup", backup_directory, base);
             save_weights(net, buff);
