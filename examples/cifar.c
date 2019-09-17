@@ -2,17 +2,44 @@
 
 void train_cifar(char *cfgfile, char *weightfile) {
     srand(time(0));
-    float avg_loss = -1;
+
     char *base = basecfg(cfgfile);
     network *net = load_network(cfgfile, weightfile, 0);
 
     char *backup_directory = "backup/";
     int classes = 10;
-    int N = 50000;
 
     char **labels = get_labels("data/cifar/train.list");
-    int epoch = (*net->seen)/N;
-    data train = load_all_cifar10();
+    list *plist = get_paths(train_list);
+    char **paths = (char **) list_to_array(plist);
+    int N = plist->size;
+
+    data train;
+    load_args args = {0};
+    args.w = net->w;
+    args.h = net->h;
+    args.min = net->min_ratio * net->w;
+    args.max = net->max_ratio * net->w;
+    args.angle = net->angle;
+    args.aspect = net->aspect;
+    args.exposure = net->exposure;
+    args.saturation = net->saturation;
+    args.hue = net->hue;
+    args.size = net->w;
+    args.paths = paths;
+    args.classes = classes;
+    args.n = net->batch * net->subdivisions;
+    args.m = N;
+    args.labels = labels;
+    args.type = CLASSIFICATION_DATA;
+    args.threads = 32;
+    args.d = &train;
+    pthread_t load_thread = load_data(args);
+    pthread_join(load_thread, 0);
+
+    // data train = load_all_cifar10();
+    int epoch = (*net->seen) / N;
+    float avg_loss = -1;
     while (get_current_batch(net) < net->max_batches || net->max_batches == 0) {
         double time = what_time_is_it_now();
         float loss = train_network_sgd(net, train, 1);

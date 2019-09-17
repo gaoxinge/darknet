@@ -65,7 +65,7 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus,
 
     args.min = net->min_ratio*net->w;
     args.max = net->max_ratio*net->w;
-    printf("%d %d\n", args.min, args.max);
+
     args.angle = net->angle;
     args.aspect = net->aspect;
     args.exposure = net->exposure;

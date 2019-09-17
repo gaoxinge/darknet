@@ -1555,7 +1555,6 @@ data load_go(char *filename)
     return d;
 }
 
-
 void randomize_data(data d)
 {
     int i;

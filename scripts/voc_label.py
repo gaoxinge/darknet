@@ -1,10 +1,8 @@
 import xml.etree.ElementTree as ET
-import pickle
 import os
-from os import listdir, getcwd
-from os.path import join
+from os import getcwd
 
-sets=[('2012', 'train'), ('2012', 'val'), ('2007', 'train'), ('2007', 'val'), ('2007', 'test')]
+sets = [('2012', 'train'), ('2012', 'val'), ('2007', 'train'), ('2007', 'val'), ('2007', 'test')]
 
 classes = ["aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
 
@@ -21,6 +19,7 @@ def convert(size, box):
     y = y*dh
     h = h*dh
     return (x,y,w,h)
+
 
 def convert_annotation(year, image_id):
     in_file = open('VOCdevkit/VOC%s/Annotations/%s.xml'%(year, image_id))
@@ -41,6 +40,7 @@ def convert_annotation(year, image_id):
         b = (float(xmlbox.find('xmin').text), float(xmlbox.find('xmax').text), float(xmlbox.find('ymin').text), float(xmlbox.find('ymax').text))
         bb = convert((w,h), b)
         out_file.write(str(cls_id) + " " + " ".join([str(a) for a in bb]) + '\n')
+
 
 wd = getcwd()
 
