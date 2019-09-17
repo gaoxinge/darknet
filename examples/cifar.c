@@ -1,13 +1,10 @@
 #include "darknet.h"
 
-void train_cifar(char *cfgfile, char *weightfile)
-{
+void train_cifar(char *cfgfile, char *weightfile) {
     srand(time(0));
     float avg_loss = -1;
     char *base = basecfg(cfgfile);
-    printf("%s\n", base);
     network *net = load_network(cfgfile, weightfile, 0);
-    printf("Learning Rate: %g, Momentum: %g, Decay: %g\n", net->learning_rate, net->momentum, net->decay);
 
     char *backup_directory = "/home/pjreddie/backup/";
     int classes = 10;
@@ -16,22 +13,29 @@ void train_cifar(char *cfgfile, char *weightfile)
     char **labels = get_labels("data/cifar/labels.txt");
     int epoch = (*net->seen)/N;
     data train = load_all_cifar10();
-    while(get_current_batch(net) < net->max_batches || net->max_batches == 0){
-        clock_t time=clock();
-
+    while (get_current_batch(net) < net->max_batches || net->max_batches == 0) {
+        double time = what_time_is_it_now();
         float loss = train_network_sgd(net, train, 1);
-        if(avg_loss == -1) avg_loss = loss;
-        avg_loss = avg_loss*.95 + loss*.05;
-        printf("%ld, %.3f: %f, %f avg, %f rate, %lf seconds, %ld images\n", get_current_batch(net), (float)(*net->seen)/N, loss, avg_loss, get_current_rate(net), sec(clock()-time), *net->seen);
-        if(*net->seen/N > epoch){
-            epoch = *net->seen/N;
+        if (avg_loss == -1) avg_loss = loss;
+        avg_loss = avg_loss * 0.9 + loss * 0.1;
+        printf("%ld, %.3f: %f, %f avg, %f rate, %lf seconds, %ld images\n",
+            get_current_batch(net),
+            (float)(*net->seen) / N,
+            loss,
+            avg_loss,
+            get_current_rate(net),
+            what_time_is_it_now() - time,
+            *net->seen);
+
+        if (*net->seen / N > epoch) {
+            epoch = *net->seen / N;
             char buff[256];
-            sprintf(buff, "%s/%s_%d.weights",backup_directory,base, epoch);
+            sprintf(buff, "%s/%s_%d.weights", backup_directory, base, epoch);
             save_weights(net, buff);
         }
-        if(get_current_batch(net)%100 == 0){
+        if (get_current_batch(net) % 100 == 0) {
             char buff[256];
-            sprintf(buff, "%s/%s.backup",backup_directory,base);
+            sprintf(buff, "%s/%s.backup", backup_directory, base);
             save_weights(net, buff);
         }
     }
@@ -45,8 +49,7 @@ void train_cifar(char *cfgfile, char *weightfile)
     free_data(train);
 }
 
-void train_cifar_distill(char *cfgfile, char *weightfile)
-{
+void train_cifar_distill(char *cfgfile, char *weightfile) {
     srand(time(0));
     float avg_loss = -1;
     char *base = basecfg(cfgfile);
@@ -98,8 +101,7 @@ void train_cifar_distill(char *cfgfile, char *weightfile)
     free_data(train);
 }
 
-void test_cifar_multi(char *filename, char *weightfile)
-{
+void test_cifar_multi(char *filename, char *weightfile) {
     network *net = load_network(filename, weightfile, 0);
     set_batch_network(net, 1);
     srand(time(0));
@@ -127,8 +129,7 @@ void test_cifar_multi(char *filename, char *weightfile)
     }
 }
 
-void test_cifar(char *filename, char *weightfile)
-{
+void test_cifar(char *filename, char *weightfile) {
     network *net = load_network(filename, weightfile, 0);
     srand(time(0));
 
@@ -146,9 +147,8 @@ void test_cifar(char *filename, char *weightfile)
     free_data(test);
 }
 
-void extract_cifar()
-{
-char *labels[] = {"airplane","automobile","bird","cat","deer","dog","frog","horse","ship","truck"};
+void extract_cifar() {
+    char *labels[] = {"airplane","automobile","bird","cat","deer","dog","frog","horse","ship","truck"};
     int i;
     data train = load_all_cifar10();
     data test = load_cifar10_data("data/cifar/cifar-10-batches-bin/test_batch.bin");
@@ -168,8 +168,7 @@ char *labels[] = {"airplane","automobile","bird","cat","deer","dog","frog","hors
     }
 }
 
-void test_cifar_csv(char *filename, char *weightfile)
-{
+void test_cifar_csv(char *filename, char *weightfile) {
     network *net = load_network(filename, weightfile, 0);
     srand(time(0));
 
@@ -192,8 +191,7 @@ void test_cifar_csv(char *filename, char *weightfile)
     free_data(test);
 }
 
-void test_cifar_csvtrain(char *cfg, char *weights)
-{
+void test_cifar_csvtrain(char *cfg, char *weights) {
     network *net = load_network(cfg, weights, 0);
     srand(time(0));
 
@@ -216,8 +214,7 @@ void test_cifar_csvtrain(char *cfg, char *weights)
     free_data(test);
 }
 
-void eval_cifar_csv()
-{
+void eval_cifar_csv() {
     data test = load_cifar10_data("data/cifar/cifar-10-batches-bin/test_batch.bin");
 
     matrix pred = csv_to_matrix("results/combined.csv");
@@ -229,19 +226,19 @@ void eval_cifar_csv()
 }
 
 void run_cifar(int argc, char **argv) {
-    if(argc < 4){
+    if (argc < 4) {
         fprintf(stderr, "usage: %s %s [train/test/valid] [cfg] [weights (optional)]\n", argv[0], argv[1]);
         return;
     }
 
     char *cfg = argv[3];
     char *weights = (argc > 4) ? argv[4] : 0;
-    if(0==strcmp(argv[2], "train")) train_cifar(cfg, weights);
-    else if(0==strcmp(argv[2], "extract")) extract_cifar();
-    else if(0==strcmp(argv[2], "distill")) train_cifar_distill(cfg, weights);
-    else if(0==strcmp(argv[2], "test")) test_cifar(cfg, weights);
-    else if(0==strcmp(argv[2], "multi")) test_cifar_multi(cfg, weights);
-    else if(0==strcmp(argv[2], "csv")) test_cifar_csv(cfg, weights);
-    else if(0==strcmp(argv[2], "csvtrain")) test_cifar_csvtrain(cfg, weights);
-    else if(0==strcmp(argv[2], "eval")) eval_cifar_csv();
+    if (0 == strcmp(argv[2], "train")) train_cifar(cfg, weights);
+    else if (0 == strcmp(argv[2], "extract")) extract_cifar();
+    else if (0 == strcmp(argv[2], "distill")) train_cifar_distill(cfg, weights);
+    else if (0 == strcmp(argv[2], "test")) test_cifar(cfg, weights);
+    else if (0 == strcmp(argv[2], "multi")) test_cifar_multi(cfg, weights);
+    else if (0 == strcmp(argv[2], "csv")) test_cifar_csv(cfg, weights);
+    else if (0 == strcmp(argv[2], "csvtrain")) test_cifar_csvtrain(cfg, weights);
+    else if (0 == strcmp(argv[2], "eval")) eval_cifar_csv();
 }
