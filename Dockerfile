@@ -9,9 +9,10 @@ RUN apt-get install -y python3-setuptools
 RUN easy_install3 -U pip
 
 # install opencv
-RUN apt-get install -y libopencv-dev python3-opencv
+RUN apt-get install -y libopencv-dev python-opencv
 
-# git clone
+WORKDIR /
+
 RUN git clone https://github.com/gaoxinge/darknet.git
 
 CMD ["sleep", "infinity"]
