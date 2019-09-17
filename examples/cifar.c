@@ -1,16 +1,47 @@
 #include "darknet.h"
 
+data load_all_cifar10() {
+    data d = {0};
+    d.shallow = 0;
+    int i,j,b;
+    matrix X = make_matrix(50000, 3072);
+    matrix y = make_matrix(50000, 10);
+    d.X = X;
+    d.y = y;
+
+    for(b = 0; b < 5; ++b){
+        char buff[256];
+        sprintf(buff, "data/cifar/cifar-10-batches-bin/data_batch_%d.bin", b+1);
+        FILE *fp = fopen(buff, "rb");
+        if(!fp) file_error(buff);
+        for(i = 0; i < 10000; ++i){
+            unsigned char bytes[3073];
+            fread(bytes, 1, 3073, fp);
+            int class = bytes[0];
+            y.vals[i+b*10000][class] = 1;
+            for(j = 0; j < X.cols; ++j){
+                X.vals[i+b*10000][j] = (double)bytes[j+1];
+            }
+        }
+        fclose(fp);
+    }
+    //normalize_data_rows(d);
+    scale_data_rows(d, 1./255);
+    smooth_data(d);
+    return d;
+}
+
 void train_cifar(char *cfgfile, char *weightfile) {
     srand(time(0));
     float avg_loss = -1;
     char *base = basecfg(cfgfile);
     network *net = load_network(cfgfile, weightfile, 0);
 
-    char *backup_directory = "/home/pjreddie/backup/";
+    char *backup_directory = "backup/";
     int classes = 10;
     int N = 50000;
 
-    char **labels = get_labels("data/cifar/labels.txt");
+    char **labels = get_labels("data/cifar/train.list");
     int epoch = (*net->seen)/N;
     data train = load_all_cifar10();
     while (get_current_batch(net) < net->max_batches || net->max_batches == 0) {
@@ -57,11 +88,11 @@ void train_cifar_distill(char *cfgfile, char *weightfile) {
     network *net = load_network(cfgfile, weightfile, 0);
     printf("Learning Rate: %g, Momentum: %g, Decay: %g\n", net->learning_rate, net->momentum, net->decay);
 
-    char *backup_directory = "/home/pjreddie/backup/";
+    char *backup_directory = "backup/";
     int classes = 10;
     int N = 50000;
 
-    char **labels = get_labels("data/cifar/labels.txt");
+    char **labels = get_labels("data/cifar/train.list");
     int epoch = (*net->seen)/N;
 
     data train = load_all_cifar10();
