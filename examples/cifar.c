@@ -9,7 +9,7 @@ void train_cifar(char *cfgfile, char *weightfile) {
     char *backup_directory = "backup/";
     int classes = 10;
 
-    char **labels = get_labels("data/cifar/train.list");
+    char **labels = get_labels("data/cifar/labels.txt");
     list *plist = get_paths("data/cifar/train.list");
     char **paths = (char **) list_to_array(plist);
     int N = plist->size;
