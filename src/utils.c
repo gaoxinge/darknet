@@ -489,7 +489,6 @@ float mse_array(float *a, int n) {
 }
 
 void normalize_array(float *a, int n) {
-    int i;
     float mu = mean_array(a,n);
     float sigma = sqrt(variance_array(a,n));
     for (int i = 0; i < n; i++) {
