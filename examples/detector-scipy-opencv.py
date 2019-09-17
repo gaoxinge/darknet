@@ -6,6 +6,7 @@
 from scipy.misc import imread
 import cv2
 
+
 def array_to_image(arr):
     arr = arr.transpose(2,0,1)
     c = arr.shape[0]
@@ -15,6 +16,7 @@ def array_to_image(arr):
     data = dn.c_array(dn.c_float, arr)
     im = dn.IMAGE(w,h,c,data)
     return im
+
 
 def detect2(net, meta, image, thresh=.5, hier_thresh=.5, nms=.45):
     boxes = dn.make_boxes(net)
@@ -39,18 +41,17 @@ import darknet as dn
 net = dn.load_net("cfg/tiny-yolo.cfg", "tiny-yolo.weights", 0)
 meta = dn.load_meta("cfg/coco.data")
 r = dn.detect(net, meta, "data/dog.jpg")
-print r
+print(r)
 
 # scipy
 arr= imread('data/dog.jpg')
 im = array_to_image(arr)
 r = detect2(net, meta, im)
-print r
+print(r)
 
 # OpenCV
 arr = cv2.imread('data/dog.jpg')
 im = array_to_image(arr)
 dn.rgbgr_image(im)
 r = detect2(net, meta, im)
-print r
-
+print(r)

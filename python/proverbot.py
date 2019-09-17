@@ -1,5 +1,6 @@
 from darknet import *
 
+
 def predict_tactic(net, s):
     prob = 0
     d = c_array(c_float, [0.0]*256)
@@ -22,7 +23,8 @@ def predict_tactic(net, s):
         if len(tac) and tac[-1] == '.':
             break
         tac = tac + c
-    return (tac, prob)
+    return tac, prob
+
 
 def predict_tactics(net, s, n):
     tacs = []
@@ -32,6 +34,8 @@ def predict_tactics(net, s, n):
     tacs = sorted(tacs, key=lambda x: -x[1])
     return tacs
 
-net = load_net("cfg/coq.test.cfg", "/home/pjreddie/backup/coq.backup", 0)
-t = predict_tactics(net, "+++++\n", 10)
-print t
+
+if __name__ == "__main__":
+    net = load_net("cfg/coq.test.cfg", "/home/pjreddie/backup/coq.backup", 0)
+    t = predict_tactics(net, "+++++\n", 10)
+    print(t)
