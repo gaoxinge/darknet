@@ -89,7 +89,8 @@ int *random_index_order(int min, int max) {
 }
 
 void del_arg(int argc, char **argv, int index) {
-    for (int i = index; i < argc - 1; i++) {
+    int i;
+    for (i = index; i < argc - 1; i++) {
         argv[i] = argv[i+1];
     }
     argv[i] = 0;
