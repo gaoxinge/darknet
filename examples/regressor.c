@@ -1,6 +1,6 @@
-#include "darknet.h"
 #include <sys/time.h>
 #include <assert.h>
+#include "darknet.h"
 
 void train_regressor(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear)
 {
@@ -146,7 +146,6 @@ void predict_regressor(char *cfgfile, char *weightfile, char *filename)
     }
 }
 
-
 void demo_regressor(char *datacfg, char *cfgfile, char *weightfile, int cam_index, const char *filename)
 {
 #ifdef OPENCV
@@ -195,7 +194,6 @@ void demo_regressor(char *datacfg, char *cfgfile, char *weightfile, int cam_inde
 #endif
 }
 
-
 void run_regressor(int argc, char **argv)
 {
     if(argc < 4){
@@ -236,5 +234,3 @@ void run_regressor(int argc, char **argv)
     else if(0==strcmp(argv[2], "train")) train_regressor(data, cfg, weights, gpus, ngpus, clear);
     else if(0==strcmp(argv[2], "demo")) demo_regressor(data, cfg, weights, cam_index, filename);
 }
-
-

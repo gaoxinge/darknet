@@ -1,6 +1,6 @@
-#include "darknet.h"
 #include <sys/time.h>
 #include <assert.h>
+#include "darknet.h"
 
 void train_segmenter(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear, int display)
 {
@@ -166,7 +166,6 @@ void predict_segmenter(char *datafile, char *cfg, char *weights, char *filename)
     }
 }
 
-
 void demo_segmenter(char *datacfg, char *cfg, char *weights, int cam_index, const char *filename)
 {
 #ifdef OPENCV
@@ -209,7 +208,6 @@ void demo_segmenter(char *datacfg, char *cfg, char *weights, int cam_index, cons
 #endif
 }
 
-
 void run_segmenter(int argc, char **argv)
 {
     if(argc < 4){
@@ -251,5 +249,3 @@ void run_segmenter(int argc, char **argv)
     else if(0==strcmp(argv[2], "train")) train_segmenter(data, cfg, weights, gpus, ngpus, clear, display);
     else if(0==strcmp(argv[2], "demo")) demo_segmenter(data, cfg, weights, cam_index, filename);
 }
-
-

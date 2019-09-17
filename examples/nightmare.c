@@ -1,6 +1,5 @@
-#include "darknet.h"
-
 #include <math.h>
+#include "darknet.h"
 
 // ./darknet nightmare cfg/extractor.recon.cfg ~/trained/yolo-coco.conv frame6.png -reconstruct -iters 500 -i 3 -lambda .1 -rate .01 -smooth 2
 
@@ -411,4 +410,3 @@ void run_nightmare(int argc, char **argv)
         im = resized;
     }
 }
-

@@ -1,6 +1,6 @@
-#include "darknet.h"
 #include <sys/time.h>
 #include <assert.h>
+#include "darknet.h"
 
 void normalize_image2(image p);
 void train_isegmenter(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear, int display)
@@ -221,7 +221,6 @@ void demo_isegmenter(char *datacfg, char *cfg, char *weights, int cam_index, con
 #endif
 }
 
-
 void run_isegmenter(int argc, char **argv)
 {
     if(argc < 4){
@@ -263,5 +262,3 @@ void run_isegmenter(int argc, char **argv)
     else if(0==strcmp(argv[2], "train")) train_isegmenter(data, cfg, weights, gpus, ngpus, clear, display);
     else if(0==strcmp(argv[2], "demo")) demo_isegmenter(data, cfg, weights, cam_index, filename);
 }
-
-

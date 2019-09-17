@@ -100,7 +100,6 @@ void test_super(char *cfgfile, char *weightfile, char *filename)
     }
 }
 
-
 void run_super(int argc, char **argv)
 {
     if(argc < 4){

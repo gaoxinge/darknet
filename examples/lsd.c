@@ -1343,7 +1343,6 @@ void test_lsd(char *cfg, char *weights, char *filename, int gray)
     }
 }
 
-
 void run_lsd(int argc, char **argv)
 {
     if(argc < 4){

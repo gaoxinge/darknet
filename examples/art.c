@@ -1,9 +1,7 @@
+#include <sys/time.h>
 #include "darknet.h"
 
-#include <sys/time.h>
-
-void demo_art(char *cfgfile, char *weightfile, int cam_index)
-{
+void demo_art(char *cfgfile, char *weightfile, int cam_index) {
 #ifdef OPENCV
     network *net = load_network(cfgfile, weightfile, 0);
     set_batch_network(net, 1);
@@ -48,12 +46,9 @@ void demo_art(char *cfgfile, char *weightfile, int cam_index)
 #endif
 }
 
-
-void run_art(int argc, char **argv)
-{
+void run_art(int argc, char **argv) {
     int cam_index = find_int_arg(argc, argv, "-c", 0);
     char *cfg = argv[2];
     char *weights = argv[3];
     demo_art(cfg, weights, cam_index);
 }
-

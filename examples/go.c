@@ -1,8 +1,7 @@
-#include "darknet.h"
-
 #include <assert.h>
 #include <math.h>
 #include <unistd.h>
+#include "darknet.h"
 
 int inverted = 1;
 int noi = 1;
@@ -1366,5 +1365,3 @@ void run_go(int argc, char **argv)
     else if(0==strcmp(argv[2], "test")) test_go(cfg, weights, multi);
     else if(0==strcmp(argv[2], "engine")) engine_go(cfg, weights, iters, time, temp, cpuct, anon, resign);
 }
-
-

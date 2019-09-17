@@ -1,7 +1,6 @@
-#include "darknet.h"
-
 #include <sys/time.h>
 #include <assert.h>
+#include "darknet.h"
 
 void extend_data_truth(data *d, int n, float val)
 {
@@ -430,7 +429,6 @@ void predict_attention(char *datacfg, char *cfgfile, char *weightfile, char *fil
     }
 }
 
-
 void run_attention(int argc, char **argv)
 {
     if(argc < 4){
@@ -455,5 +453,3 @@ void run_attention(int argc, char **argv)
     else if(0==strcmp(argv[2], "valid")) validate_attention_single(data, cfg, weights);
     else if(0==strcmp(argv[2], "validmulti")) validate_attention_multi(data, cfg, weights);
 }
-
-

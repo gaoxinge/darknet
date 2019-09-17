@@ -141,7 +141,6 @@ void test_voxel(char *cfgfile, char *weightfile, char *filename)
     }
 }
 
-
 void run_voxel(int argc, char **argv)
 {
     if(argc < 4){

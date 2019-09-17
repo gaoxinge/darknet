@@ -331,7 +331,8 @@ void test_captcha(char *cfgfile, char *weightfile)
         free_image(im);
     }
 }
-    */
+*/
+
 void run_captcha(int argc, char **argv)
 {
     if(argc < 4){
@@ -350,4 +351,3 @@ void run_captcha(int argc, char **argv)
     //else if(0==strcmp(argv[2], "decode")) decode_captcha(cfg, weights);
     //else if(0==strcmp(argv[2], "valid")) validate_captcha(cfg, weights);
 }
-

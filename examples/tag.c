@@ -122,7 +122,6 @@ void test_tag(char *cfgfile, char *weightfile, char *filename)
     }
 }
 
-
 void run_tag(int argc, char **argv)
 {
     if(argc < 4){
@@ -137,4 +136,3 @@ void run_tag(int argc, char **argv)
     if(0==strcmp(argv[2], "train")) train_tag(cfg, weights, clear);
     else if(0==strcmp(argv[2], "test")) test_tag(cfg, weights, filename);
 }
-

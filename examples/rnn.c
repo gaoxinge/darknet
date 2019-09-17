@@ -1,6 +1,5 @@
-#include "darknet.h"
-
 #include <math.h>
+#include "darknet.h"
 
 typedef struct {
     float *x;
@@ -65,7 +64,6 @@ char **read_tokens(char *filename, size_t *read)
     *read = count;
     return d;
 }
-
 
 float_pair get_rnn_token_data(int *tokens, size_t *offsets, int characters, size_t len, int batch, int steps)
 {
